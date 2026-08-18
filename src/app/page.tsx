@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import Hero from '@/components/Hero';
 import FloatingNav from '@/components/FloatingNav';
 import Rsvp from '@/components/Rsvp';
@@ -16,6 +16,7 @@ import Confetti, { type ConfettiHandle } from '@/components/Confetti';
 
 export default function Home() {
   const confettiRef = useRef<ConfettiHandle>(null);
+  const [guestRefresh, setGuestRefresh] = useState(0);
 
   return (
     <>
@@ -23,8 +24,11 @@ export default function Home() {
       <Hero />
       <FloatingNav />
       <main>
-        <Rsvp onConfirm={() => confettiRef.current?.fire()} />
-        <GuestList />
+        <Rsvp
+          onConfirm={() => confettiRef.current?.fire()}
+          onSubmit={() => setTimeout(() => setGuestRefresh(k => k + 1), 500)}
+        />
+        <GuestList refreshKey={guestRefresh} />
         <Location />
         <DressCode />
         <Playlist />

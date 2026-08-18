@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useScrollReveal } from '@/lib/use-scroll-reveal';
 
 interface Guest {
@@ -15,21 +15,24 @@ const LABELS: Record<string, { emoji: string; text: string }> = {
   no: { emoji: '😢', text: 'No puede' },
 };
 
-export default function GuestList() {
+export default function GuestList({ refreshKey }: { refreshKey?: number }) {
   const ref = useScrollReveal<HTMLElement>();
   const [guests, setGuests] = useState<Guest[]>([]);
 
-  useEffect(() => {
+  const loadGuests = useCallback(() => {
     fetch('/api/guests')
       .then(r => r.json())
       .then((data: Guest[]) => setGuests(data))
       .catch(() => {});
   }, []);
 
+  useEffect(() => {
+    loadGuests();
+  }, [loadGuests, refreshKey]);
+
   const confirmed = guests.filter(g => g.attendance === 'yes');
   const maybe = guests.filter(g => g.attendance === 'maybe');
-
-  if (guests.length === 0) return null;
+  const visible = guests.filter(g => g.attendance !== 'no');
 
   return (
     <section id="invitados" className="max-w-[900px] mx-auto px-6 py-20 md:py-24" ref={ref}>
@@ -40,16 +43,21 @@ export default function GuestList() {
         <h2 className="font-[family-name:var(--font-syne)] text-[clamp(1.75rem,4vw,2.5rem)] font-extrabold mb-4">
           Invitados
         </h2>
-        <p className="text-text-soft">
-          {confirmed.length} confirmado{confirmed.length !== 1 ? 's' : ''}
-          {maybe.length > 0 && ` · ${maybe.length} tal vez`}
-        </p>
+        {guests.length > 0 ? (
+          <p className="text-text-soft">
+            {confirmed.length} confirmado{confirmed.length !== 1 ? 's' : ''}
+            {maybe.length > 0 && ` · ${maybe.length} tal vez`}
+          </p>
+        ) : (
+          <p className="text-text-soft">
+            Aún no hay confirmaciones. ¡Sé el primero en confirmar! 🎉
+          </p>
+        )}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-8">
-        {guests
-          .filter(g => g.attendance !== 'no')
-          .map((g, i) => {
+      {visible.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-8">
+          {visible.map((g, i) => {
             const label = LABELS[g.attendance] || LABELS.yes;
             return (
               <div key={i} className="card reveal !p-4 text-center">
@@ -66,7 +74,8 @@ export default function GuestList() {
               </div>
             );
           })}
-      </div>
+        </div>
+      )}
     </section>
   );
 }

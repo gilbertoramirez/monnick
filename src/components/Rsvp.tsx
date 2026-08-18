@@ -18,7 +18,7 @@ function getGuests(): Guest[] {
   catch { return []; }
 }
 
-export default function Rsvp({ onConfirm }: { onConfirm?: () => void }) {
+export default function Rsvp({ onConfirm, onSubmit }: { onConfirm?: () => void; onSubmit?: () => void }) {
   const { show } = useToast();
   const ref = useScrollReveal<HTMLElement>();
   const [done, setDone] = useState(false);
@@ -74,6 +74,7 @@ export default function Rsvp({ onConfirm }: { onConfirm?: () => void }) {
     setDone(true);
 
     if (attendance === 'yes') onConfirm?.();
+    onSubmit?.();
     show('RSVP confirmado ✓');
   }
 

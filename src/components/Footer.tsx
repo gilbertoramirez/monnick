@@ -6,7 +6,7 @@ export default function Footer() {
       <p className="font-[family-name:var(--font-syne)] text-2xl font-extrabold text-accent mb-2">
         {EVENT.hashtag}
       </p>
-      <p>Nos vemos el 19 de septiembre &#9829;</p>
+      <p>Nos vemos el 4 de diciembre &#9829;</p>
     </footer>
   );
 }

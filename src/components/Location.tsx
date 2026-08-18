@@ -31,9 +31,10 @@ export default function Location() {
         <div className="p-8 flex flex-col justify-center gap-5">
           <h3 className="font-[family-name:var(--font-syne)] text-2xl font-extrabold">{EVENT.venue}</h3>
           <p className="text-text-soft leading-relaxed">
-            {EVENT.addressShort}<br />
-            Col. Centro, CDMX<br />
-            {EVENT.cp}
+            {EVENT.address}
+          </p>
+          <p className="text-text-soft text-sm">
+            Confirma al: <a href={`tel:${EVENT.phone.replace(/\s/g, '')}`} className="text-accent font-semibold hover:underline">{EVENT.phone}</a>
           </p>
           <div className="flex gap-3 flex-wrap">
             <a href={EVENT.mapsUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary">

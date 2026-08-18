@@ -81,6 +81,8 @@ export default function Rsvp({ onConfirm }: { onConfirm?: () => void }) {
         </h2>
         <p className="text-text-soft max-w-[50ch]">
           Confirma antes del {EVENT.rsvpDeadline} para que no te quedes sin lugar.
+          También puedes confirmar al{' '}
+          <a href={`tel:${EVENT.phone.replace(/\s/g, '')}`} className="text-accent font-semibold hover:underline">{EVENT.phone}</a>.
         </p>
       </div>
 

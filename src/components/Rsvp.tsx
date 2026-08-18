@@ -45,14 +45,21 @@ export default function Rsvp({ onConfirm }: { onConfirm?: () => void }) {
       return;
     }
 
-    const guests = getGuests();
-    guests.push({
+    const guestData = {
       name: name.trim(),
       attendance,
       companion: hasCompanion ? companionName.trim() : '',
       dietary: dietary.trim(),
-      timestamp: new Date().toISOString(),
-    });
+    };
+
+    fetch('/api/guests', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(guestData),
+    }).catch(() => {});
+
+    const guests = getGuests();
+    guests.push({ ...guestData, timestamp: new Date().toISOString() });
     localStorage.setItem('monnick_guests', JSON.stringify(guests));
     localStorage.setItem('monnick_rsvp_done', '1');
     localStorage.setItem('monnick_guest_name', name.trim());

@@ -7,6 +7,7 @@ import Rsvp from '@/components/Rsvp';
 import Location from '@/components/Location';
 import DressCode from '@/components/DressCode';
 import Playlist from '@/components/Playlist';
+import GuestList from '@/components/GuestList';
 import Guestbook from '@/components/Guestbook';
 import Photos from '@/components/Photos';
 import Calendar from '@/components/Calendar';
@@ -23,6 +24,7 @@ export default function Home() {
       <FloatingNav />
       <main>
         <Rsvp onConfirm={() => confettiRef.current?.fire()} />
+        <GuestList />
         <Location />
         <DressCode />
         <Playlist />

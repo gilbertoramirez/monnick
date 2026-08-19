@@ -1,62 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { EVENT } from '@/lib/config';
+import { useToast } from '@/lib/toast-context';
 import { useScrollReveal } from '@/lib/use-scroll-reveal';
-
-function drawQR(canvas: HTMLCanvasElement) {
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-  const size = 180;
-  const modules = 25;
-  const cell = size / modules;
-
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, size, size);
-  ctx.fillStyle = '#1E0E2B';
-
-  const fill = (r: number, c: number) => ctx.fillRect(c * cell, r * cell, cell, cell);
-
-  function drawFinder(sr: number, sc: number) {
-    for (let r = 0; r < 7; r++) {
-      for (let c = 0; c < 7; c++) {
-        const outer = r === 0 || r === 6 || c === 0 || c === 6;
-        const inner = r >= 2 && r <= 4 && c >= 2 && c <= 4;
-        if (outer || inner) fill(sr + r, sc + c);
-      }
-    }
-  }
-
-  drawFinder(0, 0);
-  drawFinder(0, modules - 7);
-  drawFinder(modules - 7, 0);
-
-  for (let i = 8; i < modules - 8; i++) {
-    if (i % 2 === 0) { fill(6, i); fill(i, 6); }
-  }
-
-  for (let r = -2; r <= 2; r++) {
-    for (let c = -2; c <= 2; c++) {
-      if (Math.abs(r) === 2 || Math.abs(c) === 2 || (r === 0 && c === 0)) {
-        fill(18 + r, 18 + c);
-      }
-    }
-  }
-
-  let seed = 42;
-  const rng = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
-
-  for (let row = 0; row < modules; row++) {
-    for (let col = 0; col < modules; col++) {
-      if (row < 9 && col < 9) continue;
-      if (row < 9 && col >= modules - 9) continue;
-      if (row >= modules - 9 && col < 9) continue;
-      if (row === 6 || col === 6) continue;
-      if (row >= 16 && row <= 20 && col >= 16 && col <= 20) continue;
-      if (rng() > 0.52) fill(row, col);
-    }
-  }
-}
+import QRCode from 'qrcode';
 
 const TIPS = [
   { icon: '📱', title: 'POV', desc: 'Graba tu punto de vista llegando a la fiesta y súbelo al álbum' },
@@ -68,10 +16,27 @@ const TIPS = [
 export default function Photos() {
   const ref = useScrollReveal<HTMLElement>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { show } = useToast();
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    if (canvasRef.current) drawQR(canvasRef.current);
+    if (canvasRef.current) {
+      QRCode.toCanvas(canvasRef.current, EVENT.photoAlbum, {
+        width: 200,
+        margin: 2,
+        color: { dark: '#1E0E2B', light: '#FFFFFF' },
+        errorCorrectionLevel: 'M',
+      });
+    }
   }, []);
+
+  function copyLink() {
+    navigator.clipboard.writeText(EVENT.photoAlbum).then(() => {
+      setCopied(true);
+      show('Link copiado al portapapeles');
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {});
+  }
 
   return (
     <section id="fotos" className="max-w-[900px] mx-auto px-6 py-20 md:py-24" ref={ref}>
@@ -88,17 +53,23 @@ export default function Photos() {
       </div>
 
       <div className="grid md:grid-cols-2 gap-8 mt-8 reveal">
-        {/* QR */}
         <div className="card flex flex-col items-center gap-5 text-center">
           <div className="qr-wrap">
-            <canvas ref={canvasRef} width={180} height={180} className="block rounded-[var(--radius-xs)]" />
+            <canvas ref={canvasRef} className="block rounded-[var(--radius-xs)]" />
           </div>
           <p className="text-sm text-text-soft max-w-[30ch]">
-            Escanea el día del evento para acceder al álbum compartido de Google Photos
+            Escanea para acceder al álbum compartido de Google Photos
           </p>
+          <div className="flex gap-3 flex-wrap justify-center">
+            <a href={EVENT.photoAlbum} target="_blank" rel="noopener noreferrer" className="btn btn-primary text-sm !py-2.5 !px-5">
+              Abrir álbum
+            </a>
+            <button onClick={copyLink} className="btn btn-outline text-sm !py-2.5 !px-5">
+              {copied ? 'Copiado ✓' : 'Copiar link'}
+            </button>
+          </div>
         </div>
 
-        {/* Tips */}
         <div className="flex flex-col gap-3">
           {TIPS.map((tip) => (
             <div key={tip.title} className="card flex items-start gap-3 !p-4">

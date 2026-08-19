@@ -5,10 +5,8 @@ import Hero from '@/components/Hero';
 import FloatingNav from '@/components/FloatingNav';
 import Rsvp from '@/components/Rsvp';
 import Location from '@/components/Location';
-import DressCode from '@/components/DressCode';
 import Playlist from '@/components/Playlist';
 import GuestList from '@/components/GuestList';
-import Guestbook from '@/components/Guestbook';
 import Photos from '@/components/Photos';
 import Calendar from '@/components/Calendar';
 import Footer from '@/components/Footer';
@@ -30,9 +28,7 @@ export default function Home() {
         />
         <GuestList refreshKey={guestRefresh} />
         <Location />
-        <DressCode />
         <Playlist />
-        <Guestbook />
         <Photos />
         <Calendar />
       </main>

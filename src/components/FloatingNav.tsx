@@ -6,9 +6,7 @@ const NAV_ITEMS = [
   { href: '#rsvp', icon: '💌', label: 'RSVP' },
   { href: '#invitados', icon: '✨', label: 'Crew' },
   { href: '#ubicacion', icon: '📍', label: 'Lugar' },
-  { href: '#dresscode', icon: '👗', label: 'Look' },
   { href: '#playlist', icon: '🎵', label: 'Playlist' },
-  { href: '#guestbook', icon: '💬', label: 'Muro' },
   { href: '#fotos', icon: '📸', label: 'Fotos' },
   { href: '#calendario', icon: '📅', label: 'Agenda' },
 ];

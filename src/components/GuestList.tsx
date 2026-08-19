@@ -56,11 +56,11 @@ export default function GuestList({ refreshKey }: { refreshKey?: number }) {
       </div>
 
       {visible.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-8 reveal">
           {visible.map((g, i) => {
             const label = LABELS[g.attendance] || LABELS.yes;
             return (
-              <div key={i} className="card reveal !p-4 text-center">
+              <div key={i} className="card !p-4 text-center">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent to-secondary mx-auto mb-3 flex items-center justify-center text-white text-lg font-bold">
                   {g.name.charAt(0).toUpperCase()}
                 </div>

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@vercel/kv';
+import Redis from 'ioredis';
 
 interface Guest {
   name: string;
@@ -11,23 +11,34 @@ interface Guest {
 
 const KV_KEY = 'monnick_guests';
 
-function getKV() {
-  const url = process.env.KV_REST_API_URL || process.env.REDIS_URL || '';
-  const token = process.env.KV_REST_API_TOKEN || process.env.REDIS_TOKEN || '';
-  return createClient({ url, token });
+function getRedis() {
+  return new Redis(process.env.REDIS_URL || '', {
+    maxRetriesPerRequest: 1,
+    lazyConnect: true,
+  });
 }
 
 async function readGuests(): Promise<Guest[]> {
+  const redis = getRedis();
   try {
-    const data = await getKV().get<Guest[]>(KV_KEY);
-    return data || [];
+    await redis.connect();
+    const data = await redis.get(KV_KEY);
+    return data ? JSON.parse(data) : [];
   } catch {
     return [];
+  } finally {
+    redis.disconnect();
   }
 }
 
 async function writeGuests(guests: Guest[]) {
-  await getKV().set(KV_KEY, guests);
+  const redis = getRedis();
+  try {
+    await redis.connect();
+    await redis.set(KV_KEY, JSON.stringify(guests));
+  } finally {
+    redis.disconnect();
+  }
 }
 
 export async function GET() {

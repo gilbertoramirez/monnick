@@ -37,7 +37,7 @@ export default function Rsvp({ onConfirm, onSubmit }: { onConfirm?: () => void; 
     setConfirmedCount(getGuests().filter((g) => g.attendance === 'yes').length);
   }, []);
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!name.trim()) { show('Escribe tu nombre'); return; }
     if (!attendance) { show('Selecciona tu asistencia'); return; }
     if (hasCompanion && !companionName.trim() && attendance !== 'no') {
@@ -52,11 +52,13 @@ export default function Rsvp({ onConfirm, onSubmit }: { onConfirm?: () => void; 
       dietary: dietary.trim(),
     };
 
-    fetch('/api/guests', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(guestData),
-    }).catch(() => {});
+    try {
+      await fetch('/api/guests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(guestData),
+      });
+    } catch {}
 
     const guests = getGuests();
     guests.push({ ...guestData, timestamp: new Date().toISOString() });

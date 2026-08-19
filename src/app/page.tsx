@@ -26,7 +26,7 @@ export default function Home() {
       <main>
         <Rsvp
           onConfirm={() => confettiRef.current?.fire()}
-          onSubmit={() => setTimeout(() => setGuestRefresh(k => k + 1), 500)}
+          onSubmit={() => setGuestRefresh(k => k + 1)}
         />
         <GuestList refreshKey={guestRefresh} />
         <Location />

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { kv } from '@vercel/kv';
+import { createClient } from '@vercel/kv';
 
 interface Guest {
   name: string;
@@ -11,9 +11,15 @@ interface Guest {
 
 const KV_KEY = 'monnick_guests';
 
+function getKV() {
+  const url = process.env.KV_REST_API_URL || process.env.REDIS_URL || '';
+  const token = process.env.KV_REST_API_TOKEN || process.env.REDIS_TOKEN || '';
+  return createClient({ url, token });
+}
+
 async function readGuests(): Promise<Guest[]> {
   try {
-    const data = await kv.get<Guest[]>(KV_KEY);
+    const data = await getKV().get<Guest[]>(KV_KEY);
     return data || [];
   } catch {
     return [];
@@ -21,7 +27,7 @@ async function readGuests(): Promise<Guest[]> {
 }
 
 async function writeGuests(guests: Guest[]) {
-  await kv.set(KV_KEY, guests);
+  await getKV().set(KV_KEY, guests);
 }
 
 export async function GET() {

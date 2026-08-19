@@ -5,10 +5,8 @@ import Hero from '@/components/Hero';
 import FloatingNav from '@/components/FloatingNav';
 import Rsvp from '@/components/Rsvp';
 import Location from '@/components/Location';
-import Playlist from '@/components/Playlist';
 import GuestList from '@/components/GuestList';
 import Photos from '@/components/Photos';
-import Calendar from '@/components/Calendar';
 import Footer from '@/components/Footer';
 import Confetti, { type ConfettiHandle } from '@/components/Confetti';
 
@@ -28,9 +26,7 @@ export default function Home() {
         />
         <GuestList refreshKey={guestRefresh} />
         <Location />
-        <Playlist />
         <Photos />
-        <Calendar />
       </main>
       <Footer />
     </>

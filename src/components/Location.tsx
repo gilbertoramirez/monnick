@@ -33,9 +33,6 @@ export default function Location() {
           <p className="text-text-soft leading-relaxed">
             {EVENT.address}
           </p>
-          <p className="text-text-soft text-sm">
-            Confirma al: <a href={`tel:${EVENT.phone.replace(/\s/g, '')}`} className="text-accent font-semibold hover:underline">{EVENT.phone}</a>
-          </p>
           <div className="flex gap-3 flex-wrap">
             <a href={EVENT.mapsUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
               Google Maps

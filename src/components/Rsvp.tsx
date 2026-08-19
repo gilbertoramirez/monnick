@@ -5,19 +5,6 @@ import { EVENT } from '@/lib/config';
 import { useToast } from '@/lib/toast-context';
 import { useScrollReveal } from '@/lib/use-scroll-reveal';
 
-interface Guest {
-  name: string;
-  attendance: string;
-  companion: string;
-  dietary: string;
-  timestamp: string;
-}
-
-function getGuests(): Guest[] {
-  try { return JSON.parse(localStorage.getItem('monnick_guests') || '[]'); }
-  catch { return []; }
-}
-
 export default function Rsvp({ onConfirm, onSubmit }: { onConfirm?: () => void; onSubmit?: () => void }) {
   const { show } = useToast();
   const ref = useScrollReveal<HTMLElement>();
@@ -26,7 +13,6 @@ export default function Rsvp({ onConfirm, onSubmit }: { onConfirm?: () => void; 
   const [attendance, setAttendance] = useState('');
   const [hasCompanion, setHasCompanion] = useState(false);
   const [companionName, setCompanionName] = useState('');
-  const [dietary, setDietary] = useState('');
   const [confirmedCount, setConfirmedCount] = useState(0);
   const [successMsg, setSuccessMsg] = useState('');
 
@@ -34,13 +20,12 @@ export default function Rsvp({ onConfirm, onSubmit }: { onConfirm?: () => void; 
     if (localStorage.getItem('monnick_rsvp_done')) {
       setDone(true);
     }
-    setConfirmedCount(getGuests().filter((g) => g.attendance === 'yes').length);
   }, []);
 
   async function handleSubmit() {
     if (!name.trim()) { show('Escribe tu nombre'); return; }
     if (!attendance) { show('Selecciona tu asistencia'); return; }
-    if (hasCompanion && !companionName.trim() && attendance !== 'no') {
+    if (hasCompanion && !companionName.trim() && attendance === 'yes') {
       show('Escribe el nombre de tu acompañante');
       return;
     }
@@ -48,31 +33,27 @@ export default function Rsvp({ onConfirm, onSubmit }: { onConfirm?: () => void; 
     const guestData = {
       name: name.trim(),
       attendance,
-      companion: hasCompanion ? companionName.trim() : '',
-      dietary: dietary.trim(),
+      companion: hasCompanion && attendance === 'yes' ? companionName.trim() : '',
     };
 
     try {
-      await fetch('/api/guests', {
+      const res = await fetch('/api/guests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(guestData),
       });
+      const data = await res.json();
+      if (data.count) setConfirmedCount(data.count);
     } catch {}
 
-    const guests = getGuests();
-    guests.push({ ...guestData, timestamp: new Date().toISOString() });
-    localStorage.setItem('monnick_guests', JSON.stringify(guests));
     localStorage.setItem('monnick_rsvp_done', '1');
     localStorage.setItem('monnick_guest_name', name.trim());
 
     const msgs: Record<string, string> = {
       yes: `¡Te esperamos con todo, ${name.trim()}!`,
-      maybe: `¡Ojalá puedas venir, ${name.trim()}!`,
       no: `Te vamos a extrañar, ${name.trim()}.`,
     };
     setSuccessMsg(msgs[attendance] || msgs.yes);
-    setConfirmedCount(guests.filter((g) => g.attendance === 'yes').length);
     setDone(true);
 
     if (attendance === 'yes') onConfirm?.();
@@ -91,13 +72,10 @@ export default function Rsvp({ onConfirm, onSubmit }: { onConfirm?: () => void; 
         </h2>
         <p className="text-text-soft max-w-[50ch]">
           Confirma antes del {EVENT.rsvpDeadline} para que no te quedes sin lugar.
-          También puedes confirmar al{' '}
-          <a href={`tel:${EVENT.phone.replace(/\s/g, '')}`} className="text-accent font-semibold hover:underline">{EVENT.phone}</a>.
         </p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-8 mt-8">
-        {/* Form */}
         {!done && (
           <div className="card reveal">
             <div className="flex flex-col gap-1 mb-5">
@@ -111,14 +89,13 @@ export default function Rsvp({ onConfirm, onSubmit }: { onConfirm?: () => void; 
             </div>
 
             <div className="flex flex-col gap-1 mb-5">
-              <label className="text-[0.8rem] font-semibold">Asistencia</label>
-              <div className="flex gap-2 flex-wrap">
+              <label className="text-[0.8rem] font-semibold">¿Vas a ir?</label>
+              <div className="flex gap-2">
                 {[
-                  { value: 'yes', label: 'Voy seguro' },
-                  { value: 'maybe', label: 'Tal vez' },
+                  { value: 'yes', label: 'Sí, voy' },
                   { value: 'no', label: 'No puedo' },
                 ].map((opt) => (
-                  <label key={opt.value} className="flex-1 min-w-[100px]">
+                  <label key={opt.value} className="flex-1">
                     <input
                       type="radio"
                       name="attendance"
@@ -133,49 +110,44 @@ export default function Rsvp({ onConfirm, onSubmit }: { onConfirm?: () => void; 
               </div>
             </div>
 
-            <div className="flex items-center gap-3 mb-5 cursor-pointer select-none" onClick={() => setHasCompanion(!hasCompanion)}>
-              <div className={`toggle-track ${hasCompanion ? 'active' : ''}`} />
-              <span className="text-[0.8rem] font-semibold">Llevo acompañante</span>
-            </div>
+            {attendance === 'yes' && (
+              <>
+                <div className="flex items-center gap-3 mb-5 cursor-pointer select-none" onClick={() => setHasCompanion(!hasCompanion)}>
+                  <div className={`toggle-track ${hasCompanion ? 'active' : ''}`} />
+                  <span className="text-[0.8rem] font-semibold">Llevo acompañante</span>
+                </div>
 
-            <div className={`companion-fields ${hasCompanion ? 'open' : ''}`}>
-              <div className="flex flex-col gap-1 mb-5">
-                <label className="text-[0.8rem] font-semibold">Nombre del acompañante</label>
-                <input
-                  className="form-input"
-                  placeholder="Nombre"
-                  value={companionName}
-                  onChange={(e) => setCompanionName(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-1 mb-5">
-              <label className="text-[0.8rem] font-semibold">Restricciones alimentarias (opcional)</label>
-              <input
-                className="form-input"
-                placeholder="Vegano, sin gluten, alergias..."
-                value={dietary}
-                onChange={(e) => setDietary(e.target.value)}
-              />
-            </div>
+                <div className={`companion-fields ${hasCompanion ? 'open' : ''}`}>
+                  <div className="flex flex-col gap-1 mb-5">
+                    <label className="text-[0.8rem] font-semibold">Nombre del acompañante</label>
+                    <input
+                      className="form-input"
+                      placeholder="Nombre"
+                      value={companionName}
+                      onChange={(e) => setCompanionName(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
 
             <button className="btn btn-primary w-full mt-2" onClick={handleSubmit}>
-              Confirmar asistencia
+              Confirmar
             </button>
           </div>
         )}
 
-        {/* Success */}
         {done && (
           <div className="card text-center py-12 reveal visible">
             <span className="text-6xl block mb-4">🎉</span>
             <h3 className="font-[family-name:var(--font-syne)] text-2xl font-extrabold mb-2">Confirmado</h3>
             <p className="text-text-soft">{successMsg || '¡Te esperamos con todo!'}</p>
-            <div className="inline-flex items-center gap-2 mt-6 px-4 py-2 bg-glow rounded-full text-sm font-semibold text-accent">
-              <span>✨</span>
-              <span>{confirmedCount} confirmados</span>
-            </div>
+            {confirmedCount > 0 && (
+              <div className="inline-flex items-center gap-2 mt-6 px-4 py-2 bg-glow rounded-full text-sm font-semibold text-accent">
+                <span>✨</span>
+                <span>{confirmedCount} confirmado{confirmedCount !== 1 ? 's' : ''}</span>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { kv } from '@vercel/kv';
 
 interface Guest {
   name: string;
@@ -10,33 +9,24 @@ interface Guest {
   timestamp: string;
 }
 
-const DATA_FILE = path.join(process.cwd(), 'data', 'guests.json');
+const KV_KEY = 'monnick_guests';
 
-let memoryStore: Guest[] | null = null;
-
-function readGuests(): Guest[] {
-  if (memoryStore) return memoryStore;
+async function readGuests(): Promise<Guest[]> {
   try {
-    const raw = fs.readFileSync(DATA_FILE, 'utf-8');
-    memoryStore = JSON.parse(raw);
-    return memoryStore!;
+    const data = await kv.get<Guest[]>(KV_KEY);
+    return data || [];
   } catch {
-    memoryStore = [];
     return [];
   }
 }
 
-function writeGuests(guests: Guest[]) {
-  memoryStore = guests;
-  try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(guests, null, 2));
-  } catch {
-    // read-only filesystem (serverless) — data lives in memory only
-  }
+async function writeGuests(guests: Guest[]) {
+  await kv.set(KV_KEY, guests);
 }
 
 export async function GET() {
-  return NextResponse.json(readGuests());
+  const guests = await readGuests();
+  return NextResponse.json(guests);
 }
 
 export async function POST(request: Request) {
@@ -47,7 +37,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Faltan campos' }, { status: 400 });
   }
 
-  const guests = readGuests();
+  const guests = await readGuests();
   const guest: Guest = {
     name: String(name).trim().slice(0, 100),
     attendance: ['yes', 'maybe', 'no'].includes(attendance) ? attendance : 'yes',
@@ -57,7 +47,7 @@ export async function POST(request: Request) {
   };
 
   guests.push(guest);
-  writeGuests(guests);
+  await writeGuests(guests);
 
   return NextResponse.json({ ok: true, count: guests.filter(g => g.attendance === 'yes').length });
 }

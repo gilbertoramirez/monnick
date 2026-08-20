@@ -6,13 +6,6 @@ import { useToast } from '@/lib/toast-context';
 import { useScrollReveal } from '@/lib/use-scroll-reveal';
 import QRCode from 'qrcode';
 
-const TIPS = [
-  { icon: '📱', title: 'POV', desc: 'Graba tu punto de vista llegando a la fiesta y súbelo al álbum' },
-  { icon: '📸', title: 'Photo dump', desc: 'Sube todas tus fotos y videos sin filtro' },
-  { icon: '✨', title: 'Lypse', desc: 'Los mejores momentos los editamos juntos después' },
-  { icon: '🎬', title: EVENT.hashtag, desc: 'Usa el hashtag en todas tus historias y posts' },
-];
-
 export default function Photos() {
   const ref = useScrollReveal<HTMLElement>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -52,8 +45,8 @@ export default function Photos() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8 mt-8 reveal">
-        <div className="card flex flex-col items-center gap-5 text-center">
+      <div className="mt-8 reveal">
+        <div className="card flex flex-col items-center gap-5 text-center max-w-[400px] mx-auto">
           <div className="qr-wrap">
             <canvas ref={canvasRef} className="block rounded-[var(--radius-xs)]" />
           </div>
@@ -68,17 +61,6 @@ export default function Photos() {
               {copied ? 'Copiado ✓' : 'Copiar link'}
             </button>
           </div>
-        </div>
-
-        <div className="flex flex-col gap-3">
-          {TIPS.map((tip) => (
-            <div key={tip.title} className="card flex items-start gap-3 !p-4">
-              <span className="text-2xl shrink-0 leading-none">{tip.icon}</span>
-              <p className="text-[0.88rem] text-text-soft">
-                <strong className="text-text-main">{tip.title}</strong> — {tip.desc}
-              </p>
-            </div>
-          ))}
         </div>
       </div>
     </section>

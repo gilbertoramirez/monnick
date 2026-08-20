@@ -10,7 +10,7 @@ export default function MonnickImage() {
     <section id="imagen" className="max-w-[600px] mx-auto px-6 py-16 md:py-20" ref={ref}>
       <div className="reveal">
         <Image
-          src="/monnick-18.png"
+          src="/monnick_2.jpeg"
           alt="Monnick cumple 18"
           width={600}
           height={800}

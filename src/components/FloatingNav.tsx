@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 const NAV_ITEMS = [
   { href: '#rsvp', icon: '💌', label: 'RSVP' },
   { href: '#invitados', icon: '✨', label: 'Crew' },
-  { href: '#ubicacion', icon: '📍', label: 'Lugar' },
   { href: '#fotos', icon: '📸', label: 'Fotos' },
 ];
 

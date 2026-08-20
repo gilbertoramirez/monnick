@@ -3,8 +3,8 @@
 import { useRef, useState } from 'react';
 import Hero from '@/components/Hero';
 import FloatingNav from '@/components/FloatingNav';
+import MonnickImage from '@/components/MonnickImage';
 import Rsvp from '@/components/Rsvp';
-import Location from '@/components/Location';
 import GuestList from '@/components/GuestList';
 import Photos from '@/components/Photos';
 import Footer from '@/components/Footer';
@@ -20,12 +20,12 @@ export default function Home() {
       <Hero />
       <FloatingNav />
       <main>
+        <MonnickImage />
         <Rsvp
           onConfirm={() => confettiRef.current?.fire()}
           onSubmit={() => setGuestRefresh(k => k + 1)}
         />
         <GuestList refreshKey={guestRefresh} />
-        <Location />
         <Photos />
       </main>
       <Footer />

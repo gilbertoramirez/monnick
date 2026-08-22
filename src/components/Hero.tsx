@@ -14,12 +14,12 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10">
-        <p className="font-[family-name:var(--font-syne)] text-[clamp(0.85rem,2vw,1.1rem)] font-semibold tracking-[0.25em] uppercase text-text-soft mb-4">
+        <p className="font-[family-name:var(--font-syne)] text-[clamp(1.5rem,5vw,3rem)] font-bold tracking-[0.15em] uppercase text-text-soft mb-4">
           Estás invitad@ a mis 18
         </p>
         <div className="mt-10 flex flex-col gap-2">
-          <p className="text-text-soft font-medium">{EVENT.dateDisplay} · {EVENT.timeDisplay}</p>
-          <p className="text-text-soft text-sm">{EVENT.address}</p>
+          <p className="text-text-soft font-medium text-[clamp(0.95rem,2.5vw,1.25rem)]">{EVENT.dateDisplay} · {EVENT.timeDisplay}</p>
+          <p className="text-text-soft text-[clamp(0.8rem,2vw,1rem)]">{EVENT.address}</p>
         </div>
       </div>
     </section>

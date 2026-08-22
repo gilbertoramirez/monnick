@@ -4,7 +4,7 @@ import { EVENT } from '@/lib/config';
 
 export default function Hero() {
   return (
-    <section id="hero" className="relative min-h-dvh flex flex-col items-center justify-center text-center px-6 py-8 overflow-hidden">
+    <section id="hero" className="relative min-h-[70dvh] flex flex-col items-center justify-center text-center px-6 py-8 overflow-hidden">
       {/* Background blobs */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <div className="hero-blob" />
@@ -17,9 +17,9 @@ export default function Hero() {
         <p className="font-[family-name:var(--font-syne)] text-[clamp(1.5rem,5vw,3rem)] font-bold tracking-[0.15em] uppercase text-text-soft mb-4">
           Estás invitad@ a mis 18
         </p>
-        <div className="mt-10 flex flex-col gap-2">
+        <div className="mt-6 flex flex-col items-center gap-2">
           <p className="text-text-soft font-medium text-[clamp(0.95rem,2.5vw,1.25rem)]">{EVENT.dateDisplay} · {EVENT.timeDisplay}</p>
-          <p className="text-text-soft text-[clamp(0.8rem,2vw,1rem)]">{EVENT.address}</p>
+          <p className="text-text-soft text-[clamp(0.8rem,2vw,1rem)] max-w-[30ch]">{EVENT.address}</p>
         </div>
       </div>
     </section>

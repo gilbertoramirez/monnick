@@ -62,20 +62,20 @@ export default function Rsvp({ onConfirm, onSubmit }: { onConfirm?: () => void; 
   }
 
   return (
-    <section id="rsvp" className="max-w-[900px] mx-auto px-6 py-20 md:py-24" ref={ref}>
-      <div className="reveal">
+    <section id="rsvp" className="max-w-[500px] mx-auto px-6 py-10 md:py-14" ref={ref}>
+      <div className="reveal text-center">
         <p className="font-[family-name:var(--font-syne)] text-xs font-bold tracking-[0.15em] uppercase text-accent mb-3">
           Confirma tu asistencia
         </p>
         <h2 className="font-[family-name:var(--font-syne)] text-[clamp(1.75rem,4vw,2.5rem)] font-extrabold mb-4">
           RSVP
         </h2>
-        <p className="text-text-soft max-w-[50ch]">
+        <p className="text-text-soft mx-auto max-w-[50ch]">
           Confirma antes del {EVENT.rsvpDeadline} para que no te quedes sin lugar.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8 mt-8">
+      <div className="flex flex-col gap-8 mt-8">
         {!done && (
           <div className="card reveal">
             <div className="flex flex-col gap-1 mb-5">

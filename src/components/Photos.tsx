@@ -32,8 +32,8 @@ export default function Photos() {
   }
 
   return (
-    <section id="fotos" className="max-w-[900px] mx-auto px-6 py-20 md:py-24" ref={ref}>
-      <div className="reveal">
+    <section id="fotos" className="max-w-[500px] mx-auto px-6 py-10 md:py-14" ref={ref}>
+      <div className="reveal text-center">
         <p className="font-[family-name:var(--font-syne)] text-xs font-bold tracking-[0.15em] uppercase text-accent mb-3">
           Recuerdos compartidos
         </p>

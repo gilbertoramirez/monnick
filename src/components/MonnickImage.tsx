@@ -7,7 +7,7 @@ export default function MonnickImage() {
   const ref = useScrollReveal<HTMLElement>();
 
   return (
-    <section id="imagen" className="max-w-[600px] mx-auto px-6 py-16 md:py-20" ref={ref}>
+    <section id="imagen" className="max-w-[400px] md:max-w-[500px] mx-auto px-6 py-10 md:py-14" ref={ref}>
       <div className="reveal">
         <Image
           src="/monnick_2.png"

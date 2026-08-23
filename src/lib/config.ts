@@ -1,10 +1,10 @@
 export const EVENT = {
   name: 'Los XVIII de Monnick',
   birthday: 'Monnick',
-  date: new Date('2026-12-04T21:30:00-06:00'),
-  endDate: new Date('2026-12-05T03:30:00-06:00'),
+  date: new Date('2026-12-04T21:00:00-06:00'),
+  endDate: new Date('2026-12-05T02:00:00-06:00'),
   dateDisplay: 'Viernes 4 de Diciembre, 2026',
-  timeDisplay: '9:30 PM',
+  timeDisplay: '9:00 PM a 2:00 AM',
   venue: 'Fuente Portal de las Flores',
   address: 'Fuente Portal de las Flores 72, Lomas de las Palmas, Huixquilucan',
   addressShort: 'Fuente Portal de las Flores 72',
@@ -13,7 +13,7 @@ export const EVENT = {
   wazeUrl: 'https://waze.com/ul?q=Fuente+Portal+de+las+Flores+72&navigate=yes',
   photoAlbum: 'https://photos.app.goo.gl/fiesta18monnick',
   hashtag: '#MonnickXVIII',
-  rsvpDeadline: '1 de diciembre',
+  rsvpDeadline: '20 de noviembre',
   phone: '56 1052 5822',
 } as const;
 
